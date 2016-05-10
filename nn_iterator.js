@@ -1,24 +1,24 @@
-var BinaryHeap = require('./binary_heap.js'),
-	IntervalHeap = require('./interval_heap.js');
+const BinaryHeap = require('./binary_heap.js');
+const IntervalHeap = require('./interval_heap.js');
 
-var NearestNeighborIterator = function(treeRoot, searchPoint, maxPointsReturned, distanceFunction) {
-	this.searchPoint = searchPoint.slice();
-	this.pointsRemaining = Math.min(maxPointsReturned, treeRoot.size);
-	this.distanceFunction = distanceFunction;
-	this.pendingPaths = new BinaryHeap.Min();
-	this.pendingPaths.offer(0, treeRoot);
-	this.evaluatedPoints = new IntervalHeap();
-};
-NearestNeighborIterator.prototype = {
+class NearestNeighborIterator {
+	constructor(treeRoot, searchPoint, maxPointsReturned, distanceFunction) {
+		this.searchPoint = searchPoint.slice();
+		this.pointsRemaining = Math.min(maxPointsReturned, treeRoot.size);
+		this.distanceFunction = distanceFunction;
+		this.pendingPaths = new BinaryHeap.Min();
+		this.pendingPaths.offer(0, treeRoot);
+		this.evaluatedPoints = new IntervalHeap();
+	}
 	hasNext() {
 		return pointsRemaining > 0;
-	},
+	}
 	next() {
 		if (!hasNext()) {
 			throw new IllegalStateException("NearestNeighborIterator has reached end!");
 		}
 
-		while (pendingPaths.size > 0 && (evaluatedPoints.size == 0 || (pendingPaths.getMinKey() < evaluatedPoints.getMinKey()))) {
+		while (pendingPaths.size > 0 && (evaluatedPoints.size === 0 || (pendingPaths.getMinKey() < evaluatedPoints.getMinKey()))) {
 			KdTree.nearestNeighborSearchStep(pendingPaths, evaluatedPoints, pointsRemaining, distanceFunction, searchPoint);
 		}
 
@@ -28,17 +28,17 @@ NearestNeighborIterator.prototype = {
 		var value = evaluatedPoints.getMin();
 		evaluatedPoints.removeMin();
 		return value;
-	},
+	}
 	distance() {
 		return lastDistanceReturned;
-	},
+	}
 	remove() {
 		throw new UnsupportedOperationException();
-	},
+	}
 	iterator() {
 		return this;
-	},
-};
+	}
+}
 
 module.exports = NearestNeighborIterator;
 

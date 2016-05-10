@@ -1,30 +1,29 @@
-var KdNode = function(dimensions, bucketCapacity) {
-	// Init base
-	this.dimensions = dimensions;
-	this.bucketCapacity = bucketCapacity;
-	this.size = 0;
-	this.singlePoint = true;
+class KdNode {
+	constructor(dimensions, bucketCapacity) {
+		// Init base
+		this.dimensions = dimensions;
+		this.bucketCapacity = bucketCapacity;
+		this.size = 0;
+		this.singlePoint = true;
 
-	// Init leaf elements
-	this.points = new Array(bucketCapacity + 1);//createArray2D(bucketCapacity + 1, 0);
-	this.data = new Array(bucketCapacity + 1);
+		// Init leaf elements
+		this.points = new Array(bucketCapacity + 1); //createArray2D(bucketCapacity + 1, 0);
+		this.data = new Array(bucketCapacity + 1);
 
-	// Init bounds
-	this.minBound = null;
-	this.maxBound = null;
+		// Init bounds
+		this.minBound = null;
+		this.maxBound = null;
 
-	// Init stem
-	// this.left = null;
-	// this.right = null;
-	// this.splitDimension = void 0;
-	// this.splitValue = void 0;
-};
-KdNode.prototype = {
-	__proto__: null,
+		// Init stem
+		// this.left = null;
+		// this.right = null;
+		// this.splitDimension = void 0;
+		// this.splitValue = void 0;
+	}
 
 	isLeaf() {
 		return this.points !== null;
-	},
+	}
 
 	addPoint(point, value) {
 		var cursor = this;
@@ -37,7 +36,7 @@ KdNode.prototype = {
 				cursor = cursor.left;
 		}
 		cursor.addLeafPoint(point, value);
-	},
+	}
 	addLeafPoint(point, value) {
 		this.points[this.size] = point;
 		this.data[this.size] = value;
@@ -51,14 +50,14 @@ KdNode.prototype = {
 			this.splitLeafNode();
 		else
 			this.increaseLeafCapacity();
-	},
+	}
 	checkBounds(point) {
 		for (var i = 0; i < this.dimensions; i++) {
 			if (point[i] > this.maxBound[i]) return false;
 			if (point[i] < this.minBound[i]) return false;
 		}
 		return true;
-	},
+	}
 	extendBounds(point) {
 		if (this.minBound === null) {
 			this.minBound = point.slice();
@@ -80,11 +79,11 @@ KdNode.prototype = {
 				this.singlePoint = false;
 			}
 		}
-	},
+	}
 	increaseLeafCapacity() {
 		this.points.length *= 2;
 		this.data.length *= 2;
-	},
+	}
 	calculateSplit() {
 		if (this.singlePoint) return false;
 
@@ -110,14 +109,14 @@ KdNode.prototype = {
 		else if (this.splitValue === Number.NEGATIVE_INFINITY)
 			this.splitValue = -Number.MAX_VALUE;
 
-		// Don't let the split value be the same as the upper value as
+		// Don't var the split value be the same as the upper value as
 		// can happen due to rounding errors!
-		if (this.splitValue == this.maxBound[this.splitDimension])
+		if (this.splitValue === this.maxBound[this.splitDimension])
 			this.splitValue = this.minBound[this.splitDimension];
 
 		// Success
 		return true;
-	},
+	}
 	splitLeafNode() {
 		this.right = new KdNode(this.dimensions, this.bucketCapacity);
 		this.left = new KdNode(this.dimensions, this.bucketCapacity);
@@ -134,8 +133,8 @@ KdNode.prototype = {
 
 		this.points = null;
 		this.data = null;
-	},
-};
+	}
+}
 
 module.exports = KdNode;
 
@@ -150,4 +149,3 @@ module.exports = KdNode;
 
 // 	return array;
 // }
-

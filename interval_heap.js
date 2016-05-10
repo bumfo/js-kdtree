@@ -1,16 +1,15 @@
 /**
  * An implementation of an implicit binary interval heap.
  */
-var defaultCapacity = 64;
+const DEFAULT_CAPACITY = 64;
 
-var IntervalHeap = function(capacity) {
-	this.data = new Array(capacity);
-	this.keys = new Array(capacity);
-	this.capacity = capacity || defaultCapacity;
-	this.size = 0;
-};
-IntervalHeap.prototype = {
-	__proto__: null,
+class IntervalHeap {
+	constructor(capacity) {
+		this.data = new Array(capacity);
+		this.keys = new Array(capacity);
+		this.capacity = capacity || DEFAULT_CAPACITY;
+		this.size = 0;
+	}
 
 	offer(key, value) {
 		// If move room is needed, double array size
@@ -25,10 +24,10 @@ IntervalHeap.prototype = {
 		this.data[this.size - 1] = value;
 		this.keys[this.size - 1] = key;
 		this.siftInsertedValueUp();
-	},
+	}
 
 	removeMin() {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
 
 		this.size--;
@@ -36,10 +35,10 @@ IntervalHeap.prototype = {
 		this.keys[0] = this.keys[this.size];
 		this.data[this.size] = null;
 		this.siftDownMin(0);
-	},
+	}
 
 	replaceMin(key, value) {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
 
 		this.data[0] = value;
@@ -50,12 +49,12 @@ IntervalHeap.prototype = {
 				this.swap(0, 1);
 			this.siftDownMin(0);
 		}
-	},
+	}
 
 	removeMax() {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
-        else if (this.size == 1) {
+		else if (this.size === 1) {
 			this.removeMin();
 			return;
 		}
@@ -65,12 +64,12 @@ IntervalHeap.prototype = {
 		this.keys[1] = this.keys[this.size];
 		this.data[this.size] = null;
 		this.siftDownMax(1);
-	},
+	}
 
 	replaceMax(key, value) {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
-        else if (this.size == 1) {
+		else if (this.size === 1) {
 			this.replaceMin(key, value);
 			return;
 		}
@@ -81,39 +80,39 @@ IntervalHeap.prototype = {
 		if (key < this.keys[0])
 			this.swap(0, 1);
 		this.siftDownMax(1);
-	},
+	}
 
 	getMin() {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
 
 		return this.data[0];
-	},
+	}
 
 	getMax() {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
-        else if (this.size == 1)
+		else if (this.size === 1)
 			return this.data[0];
 
 		return this.data[1];
-	},
+	}
 
 	getMinKey() {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
 
 		return this.keys[0];
-	},
+	}
 
 	getMaxKey() {
-		if (this.size == 0)
+		if (this.size === 0)
 			throw new IllegalStateException();
-        else if (this.size == 1)
+		else if (this.size === 1)
 			return this.keys[0];
 
 		return this.keys[1];
-	},
+	}
 
 	swap(x, y) {
 		var yData = this.data[y];
@@ -123,15 +122,15 @@ IntervalHeap.prototype = {
 		this.data[x] = yData;
 		this.keys[x] = yDist;
 		return y;
-	},
+	}
 
 	/**
-	 * Min-side (u % 2 == 0):
+	 * Min-side (u % 2 === 0):
 	 * - leftchild:  2u + 2
 	 * - rightchild: 2u + 4
 	 * - parent:     (x/2-1)&~1
 	 *
-	 * Max-side (u % 2 == 1):
+	 * Max-side (u % 2 === 1):
 	 * - leftchild:  2u + 1
 	 * - rightchild: 2u + 3
 	 * - parent:     (x/2-1)|1
@@ -139,14 +138,14 @@ IntervalHeap.prototype = {
 
 	siftInsertedValueUp() {
 		var u = this.size - 1;
-		if (u == 0)
-			;// Do nothing if it's the only element!
-        else if (u == 1) {
+		if (u === 0)
+		; // Do nothing if it's the only element!
+		else if (u === 1) {
 			// If it is the second element, just sort it with it's pair
 			if (this.keys[u] < this.keys[u - 1]) { // If less than it's pair
 				this.swap(u, u - 1); // Swap with it's pair
 			}
-		} else if (u % 2 == 1) {
+		} else if (u % 2 === 1) {
 			// Already paired. Ensure pair is ordered right
 			var p = (u / 2 - 1) | 1; // The larger value of the parent pair
 			if (this.keys[u] < this.keys[u - 1]) { // If less than it's pair
@@ -176,21 +175,21 @@ IntervalHeap.prototype = {
 				this.siftUpMin(u);
 			}
 		}
-	},
+	}
 
 	siftUpMin(c) {
 		// Min-side parent: (x/2-1)&~1
 		for (var p = (c / 2 - 1) & ~1; p >= 0 && this.keys[c] < this.keys[p]; c = p, p = (c / 2 - 1) & ~1) {
 			this.swap(c, p);
 		}
-	},
+	}
 
 	siftUpMax(c) {
 		// Max-side parent: (x/2-1)|1
 		for (var p = (c / 2 - 1) | 1; p >= 0 && this.keys[c] > this.keys[p]; c = p, p = (c / 2 - 1) | 1) {
 			this.swap(c, p);
 		}
-	},
+	}
 
 	siftDownMin(p) {
 		for (var c = p * 2 + 2; c < this.size; p = c, c = p * 2 + 2) {
@@ -205,16 +204,16 @@ IntervalHeap.prototype = {
 				break;
 			}
 		}
-	},
+	}
 
 	siftDownMax(p) {
 		for (var c = p * 2 + 1; c <= this.size; p = c, c = p * 2 + 1) {
-			if (c == this.size) {
+			if (c === this.size) {
 				// If the left child only has half a pair
 				if (this.keys[c - 1] > this.keys[p])
 					this.swap(p, c - 1);
 				break;
-			} else if (c + 2 == this.size) {
+			} else if (c + 2 === this.size) {
 				// If there is only room for a right child lower pair
 				if (this.keys[c + 1] > this.keys[c]) {
 					if (this.keys[c + 1] > this.keys[p])
@@ -235,7 +234,7 @@ IntervalHeap.prototype = {
 				break;
 			}
 		}
-	},
+	}
 
 	toString() {
 		// java.text.DecimalFormat twoPlaces = new java.text.DecimalFormat("0.00");
@@ -254,7 +253,7 @@ IntervalHeap.prototype = {
 		// 	p *= 2;
 		// }
 		// return str.toString();
-	},
+	}
 
 	validateHeap() {
 		// Validate left-right
@@ -268,5 +267,7 @@ IntervalHeap.prototype = {
 			if (this.keys[i] > maxParent || this.keys[i] < minParent) return false;
 		}
 		return true;
-	},
+	}
 }
+
+module.exports = IntervalHeap;

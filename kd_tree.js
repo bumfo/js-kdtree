@@ -1,18 +1,15 @@
-var KdNode = require('./kdnode.js'),
-    BinaryHeap = require('./binary_heap.js'),
-    NearestNeighborIterator = require('./nn_iterator.js');
+const KdNode = require('./kd_node.js');
+const BinaryHeap = require('./binary_heap.js');
+const NearestNeighborIterator = require('./nn_iterator.js');
 
-var KdTree = function(dimensions, bucketCapacity) {
-	this.KdNode(dimensions, bucketCapacity || 24);
-};
-KdTree.prototype = {
-	__proto__: KdNode.prototype,
-
-	KdNode,
+class KdTree extends KdNode {
+	constructor(dimensions, bucketCapacity) {
+		super(dimensions, bucketCapacity || 24);
+	}
 
 	getNearestNeighborIterator(searchPoint, maxPointsReturned, distanceFunction) {
 		return new NearestNeighborIterator(this, searchPoint, maxPointsReturned, distanceFunction);
-	},
+	}
 	findNearestNeighbors(searchPoint, maxPointsReturned, distanceFunction) {
 		var pendingPaths = new BinaryHeap.Min();
 		var evaluatedPoints = new BinaryHeap.Max();
@@ -23,7 +20,7 @@ KdTree.prototype = {
 			this.nearestNeighborSearchStep(pendingPaths, evaluatedPoints, pointsRemaining, distanceFunction, searchPoint);
 
 		return evaluatedPoints;
-	},
+	}
 	nearestNeighborSearchStep(pendingPaths, evaluatedPoints, desiredPoints, distanceFunction, searchPoint) {
 		// If there are pending paths possibly closer than the nearest evaluated point, check it out
 		var cursor = pendingPaths.getMin();
@@ -53,7 +50,7 @@ KdTree.prototype = {
 					var value = cursor.data[i];
 
 					// If we don't need any more, replace max
-					if (evaluatedPoints.size == desiredPoints)
+					if (evaluatedPoints.size === desiredPoints)
 						evaluatedPoints.replaceMax(nodeDistance, value);
 					else
 						evaluatedPoints.offer(nodeDistance, value);
@@ -72,7 +69,7 @@ KdTree.prototype = {
 					evaluatedPoints.replaceMax(distance, value);
 			}
 		}
-	},
-};
+	}
+}
 
 module.exports = KdTree;
