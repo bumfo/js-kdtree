@@ -7,7 +7,7 @@ class KdNode {
 		this.singlePoint = true;
 
 		// Init leaf elements
-		this.points = new Array(bucketCapacity + 1); //createArray2D(bucketCapacity + 1, 0);
+		this.points = new Array(bucketCapacity + 1);
 		this.data = new Array(bucketCapacity + 1);
 
 		// Init bounds
@@ -36,6 +36,12 @@ class KdNode {
 				cursor = cursor.left;
 		}
 		cursor.addLeafPoint(point, value);
+	}
+	addLeafPointNoSplit(point, value) {
+		this.points[this.size] = point;
+		this.data[this.size] = value;
+		this.extendBounds(point);
+		this.size++;
 	}
 	addLeafPoint(point, value) {
 		this.points[this.size] = point;
@@ -126,9 +132,9 @@ class KdNode {
 			var oldLocation = this.points[i];
 			var oldData = this.data[i];
 			if (oldLocation[this.splitDimension] > this.splitValue)
-				this.right.addLeafPoint(oldLocation, oldData);
+				this.right.addLeafPointNoSplit(oldLocation, oldData);
 			else
-				this.left.addLeafPoint(oldLocation, oldData);
+				this.left.addLeafPointNoSplit(oldLocation, oldData);
 		}
 
 		this.points = null;
@@ -137,15 +143,3 @@ class KdNode {
 }
 
 module.exports = KdNode;
-
-// function createArray2D(m, n) {
-// 	n = n || 0;
-
-// 	var array = new Array(m);
-
-// 	for (var i = 0, n = array.length; i < n; ++i) {
-// 		array[i] = new Array(n);
-// 	}
-
-// 	return array;
-// }
